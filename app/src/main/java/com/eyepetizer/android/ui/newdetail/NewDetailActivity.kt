@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.Observer
@@ -39,6 +40,7 @@ import com.eyepetizer.android.ui.common.ui.BaseActivity
 import com.eyepetizer.android.ui.common.view.NoStatusFooter
 import com.eyepetizer.android.ui.login.LoginActivity
 import com.eyepetizer.android.util.*
+import com.qiniu.cdnr.File
 import com.shuyu.gsyvideoplayer.GSYVideoADManager
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
@@ -78,6 +80,8 @@ class NewDetailActivity : BaseActivity() {
 
     private var hideBottomContainerJob: Job? = null
 
+    private var file: File? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityNewDetailBinding.inflate(layoutInflater)
@@ -113,6 +117,7 @@ class NewDetailActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        file?.close()
         GSYVideoADManager.releaseAllVideos()
         orientationUtils?.releaseListener()
         binding.videoPlayer.release()
@@ -303,7 +308,8 @@ class NewDetailActivity : BaseActivity() {
             //设置播放过程中的回调
             setVideoAllCallBack(VideoCallPlayBack(binding, ::switchTitleBarVisible, ::delayHideBottomContainer))
             //设置播放URL
-            setUp(it.playUrl, false, it.title)
+            file = CDNRUtils.getClient().createTask(it.playUrl, 1000).start()
+            setUp(CDNRUtils.getClient().makeProxyURL(file), false, it.title)
             //开始播放
             startPlayLogic()
         }
