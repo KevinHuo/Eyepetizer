@@ -10,7 +10,9 @@ public class CDNRUtils {
     private static Client sClient;
 
     public static void init(Context context) {
-        sClient = Client.create(context, null, null, new Config());
+        Config config = new Config();
+        config.setHttpDNS(true);
+        sClient = Client.create(context, null, null, config);
     }
 
     public static Client getClient() {
