@@ -25,6 +25,7 @@ import com.eyepetizer.android.extension.preCreateSession
 import com.eyepetizer.android.ui.SplashActivity
 import com.eyepetizer.android.ui.common.ui.WebViewActivity
 import com.eyepetizer.android.ui.common.view.NoStatusFooter
+import com.eyepetizer.android.util.CDNRUtils
 import com.eyepetizer.android.util.DialogAppraiseTipsWorker
 import com.eyepetizer.android.util.GlobalUtil
 import com.scwang.smart.refresh.header.MaterialHeader
@@ -77,6 +78,7 @@ class EyepetizerApplication : Application() {
         if (!SplashActivity.isFirstEntryApp && DialogAppraiseTipsWorker.isNeedShowDialog) {
             WorkManager.getInstance(this).enqueue(DialogAppraiseTipsWorker.showDialogWorkRequest)
         }
+        CDNRUtils.init(this)
     }
 
     companion object {
